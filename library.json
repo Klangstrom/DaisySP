@@ -1,0 +1,22 @@
+{
+  "name": "DaisySP",
+  "version": "1.0.0",
+  "description": "Fork of Electrosmith’s DaisySP library, adapted into an Arduino Library.",
+  "keywords": ["DSP", "audio", "synthesis", "signal"],
+  "authors": [
+    {
+      "name": "Electrosmith, Corp."
+    },
+    {
+      "name": "Dennis P Paul",
+      "maintainer": true
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dennisppaul/DaisySP.git"
+  },
+  "frameworks": ["arduino"],
+  "platforms": ["*"],
+  "headers": "daisysp.h"
+}
