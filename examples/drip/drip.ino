@@ -15,7 +15,7 @@ size_t num_channels = 2;
 
 static Drip drip;
 static Metro tick;
-bool gate;
+
 
 void audioblock(AudioBlock* audio_block) {
   float output;
