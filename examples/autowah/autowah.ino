@@ -1,4 +1,3 @@
-
 #include <vector>
 
 #include "Arduino.h"
@@ -10,54 +9,39 @@
 using namespace daisysp;
 
 #define AUDIO_SAMPLE_RATE 48000
-AudioDevice *audiodevice;
+AudioDevice* audiodevice;
+
 size_t num_channels;
 
-// Set max delay time to 0.75 of samplerate.
-#define MAX_DELAY static_cast<size_t>(48000 * 0.75f)
-
-// Helper Modules
 static AdEnv env;
 static Oscillator osc;
 static Metro tick;
-
-// Declare a DelayLine of MAX_DELAY number of floats.
-static DelayLine<float, MAX_DELAY> del;
+static Autowah autowah;
 
 void audioblock(AudioBlock* audio_block) {
-  float osc_out, env_out, feedback, del_out, sig_out;
+  float osc_out, env_out;
   for (size_t i = 0; i < audio_block->block_size; i++) {
 
-    // When the Metro ticks:
-    // trigger the envelope to start, and change freq of oscillator.
+    // When the metro ticks, trigger the envelope to start.
     if (tick.Process()) {
-      float freq = rand() % 200;
-      osc.SetFreq(freq + 100.0f);
       env.Trigger();
+      osc.SetFreq(float(random(100,240)));
     }
 
     // Use envelope to control the amplitude of the oscillator.
+    // Apply autowah on the signal.
     env_out = env.Process();
     osc.SetAmp(env_out);
     osc_out = osc.Process();
-
-    // Read from delay line
-    del_out = del.Read();
-    // Calculate output and feedback
-    sig_out = del_out + osc_out;
-    feedback = (del_out * 0.55f) + osc_out;
-
-    // Write to the delay
-    del.Write(feedback);
+    osc_out = autowah.Process(osc_out);
 
     for (size_t chn = 0; chn < num_channels; chn++) {
-      audio_block->output[chn][i] = sig_out;
+      audio_block->output[chn][i] = osc_out;
     }
   }
 }
 
 void setup() {
-
   system_init();
 
   // init audio
@@ -74,29 +58,32 @@ void setup() {
   audiodevice_resume(audiodevice);
 
   num_channels = 2;
-  
-  //init metronom 
+
   env.Init(AUDIO_SAMPLE_RATE);
   osc.Init(AUDIO_SAMPLE_RATE);
-  del.Init();
+  autowah.Init(AUDIO_SAMPLE_RATE);
 
-  // Set up Metro to pulse every second
+  // Set up metro to pulse every second
   tick.Init(1.0f, AUDIO_SAMPLE_RATE);
 
   // set adenv parameters
-  env.SetTime(ADENV_SEG_ATTACK, 0.001);
-  env.SetTime(ADENV_SEG_DECAY, 0.50);
+  env.SetTime(ADENV_SEG_ATTACK, 0.01);
+  env.SetTime(ADENV_SEG_DECAY, 0.5);
   env.SetMin(0.0);
-  env.SetMax(0.25);
+  env.SetMax(0.5);
   env.SetCurve(0);  // linear
 
   // Set parameters for oscillator
-  osc.SetWaveform(osc.WAVE_TRI);
+  osc.SetWaveform(osc.WAVE_SAW);
   osc.SetFreq(220);
-  osc.SetAmp(0.15);
+  osc.SetAmp(0.25);
 
-  // Set Delay time to 0.75 seconds
-  del.SetDelay(AUDIO_SAMPLE_RATE * 2.0f);
+  // set autowah parameters
+  autowah.SetLevel(.1);
+  autowah.SetDryWet(100);
+  autowah.SetWah(1);
+
+
 }
 
 void loop() {}
