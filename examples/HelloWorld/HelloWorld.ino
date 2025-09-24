@@ -1,3 +1,5 @@
+// select 'Tools > Board: ... > Umfeld > Umfeld Application'
+
 #include "Umfeld.h"
 #include "daisysp.h"
 
