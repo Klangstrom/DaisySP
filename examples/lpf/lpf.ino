@@ -26,7 +26,6 @@ void setup() {
   display_init(true);
   display_enable_automatic_update(true);
 
-
   // init audio
   AudioInfo audioinfo;
   audioinfo.sample_rate = AUDIO_SAMPLE_RATE;
