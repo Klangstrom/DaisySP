@@ -63,7 +63,6 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 }
 
 void display_touch_event(const TouchEvent* touchevent) {
@@ -83,20 +82,18 @@ void display_touch_event(const TouchEvent* touchevent) {
     lfo.SetFreq(lfo_freq);
   }
 }
-void clear_display(){
 
+void clear_display(){
 }
 
-
 void display_update_event() {
-
   draw_line_horizontal(0, touch_y, display_get_width(), 0xFFFFFFFF);
   draw_line_vertical(touch_x, 0, display_get_height(), 0xFFFFFFFF);
   //background
-  draw_rect_fill(0,0,touch_x,touch_y,color_from_gray(0.25));
-  draw_rect_fill(touch_x,0,display_get_width()-touch_x,touch_y,color_from_gray(0.5));
-  draw_rect_fill(0,touch_y,touch_x,display_get_height()-touch_y,color_from_gray(0.75));
-  draw_rect_fill(touch_x,touch_y,display_get_width()-touch_x, display_get_height()-touch_y,color_from_gray(1.0));
+  draw_rect_fill(0,0,touch_x,touch_y, color_from_gray(0.25));
+  draw_rect_fill(touch_x,0,display_get_width()-touch_x,touch_y, color_from_gray(0.5));
+  draw_rect_fill(0,touch_y,touch_x,display_get_height()-touch_y, color_from_gray(0.75));
+  draw_rect_fill(touch_x,touch_y,display_get_width()-touch_x, display_get_height() - touch_y, color_from_gray(1.0));
 
   //circle color depending on x postion
   int r = 255;
@@ -105,7 +102,6 @@ void display_update_event() {
 
   draw_circle_fill(touch_x, touch_y, 40, color_from_rgb(r, g, b));
 }
-
 
 void audioblock(const AudioBlock* audio_block) {
   for (int i = 0; i < audio_block->block_size; ++i) {
