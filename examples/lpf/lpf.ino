@@ -66,12 +66,12 @@ void loop() {
   // put your main code here, to run repeatedly:
 }
 
-void display_touch_event(TouchEvent* touchevent) {
+void display_touch_event(const TouchEvent* touchevent) {
   for (int i = 0; i < 1; i++) {
     touch_x = touchevent->x[i];
     touch_y = touchevent->y[i];
-    touch_x = constrain(touch_x,40+1,display_get_width()-40);
-    touch_y = constrain(touch_y,40+1,display_get_height()-40);
+    // touch_x = constrain(touch_x,40+1,display_get_width()-40);
+    // touch_y = constrain(touch_y,40+1,display_get_height()-40);
     float freq = float(map(touch_x, 0, display_get_width(), 50, 890));
     float res = float(touch_y) / float(display_get_height() / 2);
     console_println("freq: %f", freq);
@@ -93,22 +93,21 @@ void display_update_event() {
   draw_line_horizontal(0, touch_y, display_get_width(), 0xFFFFFFFF);
   draw_line_vertical(touch_x, 0, display_get_height(), 0xFFFFFFFF);
   //background
-  draw_rect_fill(0,0,touch_x,touch_y,GRAY(64));
-  draw_rect_fill(touch_x,0,display_get_width()-touch_x,touch_y,GRAY(128));
-  draw_rect_fill(0,touch_y,touch_x,display_get_height()-touch_y,GRAY(192));
-  draw_rect_fill(touch_x,touch_y,display_get_width()-touch_x, display_get_height()-touch_y,GRAY(0xFF));
-
+  draw_rect_fill(0,0,touch_x,touch_y,color_from_gray(0.25));
+  draw_rect_fill(touch_x,0,display_get_width()-touch_x,touch_y,color_from_gray(0.5));
+  draw_rect_fill(0,touch_y,touch_x,display_get_height()-touch_y,color_from_gray(0.75));
+  draw_rect_fill(touch_x,touch_y,display_get_width()-touch_x, display_get_height()-touch_y,color_from_gray(1.0));
 
   //circle color depending on x postion
   int r = 255;
   int g = map(touch_x, 0, display_get_width(), 255, 50);
   int b = map(touch_x, 0, display_get_width(), 255, 0);
 
-  draw_circle_fill(touch_x, touch_y, 40, color(r, g, b));
+  draw_circle_fill(touch_x, touch_y, 40, color_from_rgb(r, g, b));
 }
 
 
-void audioblock(AudioBlock* audio_block) {
+void audioblock(const AudioBlock* audio_block) {
   for (int i = 0; i < audio_block->block_size; ++i) {
     float fmod = lfo.Process();
     fmod *= 222.0;
